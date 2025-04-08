@@ -1,7 +1,7 @@
 #ifndef JSON_TPP
 #define JSON_TPP
 
-#include "class/JSON.hpp"
+#include "JSON.hpp"
 
 #include <sstream>
 
@@ -44,7 +44,8 @@ std::string JSON::stringify(const std::vector<T> &vec)
 {
 	std::string result = "[";
 
-	for (typename std::vector<T>::const_iterator it = vec.begin(); it != vec.end(); ++it) {
+	for (typename std::vector<T>::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	{
 		if (it != vec.begin())
 			result += ",";
 		result += JSON::stringify(*it);

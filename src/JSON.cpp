@@ -1,4 +1,4 @@
-#include "class/JSON.hpp"
+#include "JSON.hpp"
 
 #include <sstream>
 
@@ -24,14 +24,15 @@ std::string JSON::Value::stringify() const
 
 std::string JSON::Array::stringify() const
 {
-	return JSON::stringify<std::vector<JSON::Value> >(*this);
+	return JSON::stringify<std::vector<JSON::Value>>(*this);
 }
 
 std::string JSON::Object::stringify() const
 {
 	std::string result = "{";
 
-	for (const_iterator it = begin(); it != end(); ++it) {
+	for (const_iterator it = begin(); it != end(); ++it)
+	{
 		if (it != begin())
 			result += ",";
 
@@ -63,13 +64,15 @@ std::string JSON::stringify(const std::string &str)
 	std::string result = str;
 
 	size_t pos = 0;
-	while ((pos = result.find('\\', pos)) != std::string::npos) {
+	while ((pos = result.find('\\', pos)) != std::string::npos)
+	{
 		result.replace(pos, 1, "\\\\");
 		pos += 2;
 	}
 
 	pos = 0;
-	while ((pos = result.find('"', pos)) != std::string::npos) {
+	while ((pos = result.find('"', pos)) != std::string::npos)
+	{
 		result.replace(pos, 1, "\\\"");
 		pos += 2;
 	}
@@ -94,15 +97,18 @@ JSON::Value JSON::_parse_value(const std::string &str, size_t &pos, bool next)
 		return Value(_parse_array(str, pos, next));
 	else if (str[pos] == '{')
 		return Value(_parse_object(str, pos, next));
-	else if (str.substr(pos, 4) == "true") {
+	else if (str.substr(pos, 4) == "true")
+	{
 		pos += 4;
 		return Value(true);
 	}
-	else if (str.substr(pos, 5) == "false") {
+	else if (str.substr(pos, 5) == "false")
+	{
 		pos += 5;
 		return Value(false);
 	}
-	else if (str.substr(pos, 4) == "null") {
+	else if (str.substr(pos, 4) == "null")
+	{
 		pos += 4;
 		return Value();
 	}
@@ -121,8 +127,10 @@ std::string JSON::_parse_string(const std::string &str)
 
 	std::string value = str.substr(1, str.size() - 2);
 
-	for (size_t pos = 0; pos < value.size(); pos++) {
-		if (value[pos] == '\\') {
+	for (size_t pos = 0; pos < value.size(); pos++)
+	{
+		if (value[pos] == '\\')
+		{
 			if (pos + 1 >= value.size())
 				throw JSON::Exception(exception_message);
 
@@ -136,7 +144,8 @@ std::string JSON::_parse_string(const std::string &str)
 				value.replace(pos, 2, "\n");
 			else
 				pos++;
-		} else if (value[pos] == '"')
+		}
+		else if (value[pos] == '"')
 			throw JSON::Exception(exception_message);
 	}
 
@@ -151,7 +160,8 @@ std::string JSON::_parse_string(const std::string &str, size_t &pos, bool next)
 	while (pos < str.size() && (str[pos] != '"' || str[pos - 1] == '\\'))
 		pos++;
 
-	if (!next) {
+	if (!next)
+	{
 		size_t end = pos;
 		_skip_spaces(str, end);
 
@@ -172,7 +182,8 @@ JSON::Array JSON::_parse_array(const std::string &str)
 	Array arr;
 	size_t pos = 1;
 
-	while (pos < str.size()) {
+	while (pos < str.size())
+	{
 		_skip_spaces(str, pos);
 		if (pos + 1 == str.size())
 			break;
@@ -196,7 +207,8 @@ JSON::Array JSON::_parse_array(const std::string &str, size_t &pos, bool next)
 	size_t start = pos++;
 
 	size_t depth = 1;
-	while (pos < str.size() && depth > 0) {
+	while (pos < str.size() && depth > 0)
+	{
 		if (str[pos] == '[')
 			depth++;
 		else if (str[pos] == ']')
@@ -205,7 +217,8 @@ JSON::Array JSON::_parse_array(const std::string &str, size_t &pos, bool next)
 		pos++;
 	}
 
-	if (!next) {
+	if (!next)
+	{
 		size_t end = pos;
 		_skip_spaces(str, end);
 
@@ -226,7 +239,8 @@ JSON::Object JSON::_parse_object(const std::string &str)
 	Object obj;
 	size_t pos = 1;
 
-	while (pos < str.size()) {
+	while (pos < str.size())
+	{
 		_skip_spaces(str, pos);
 		if (pos + 1 == str.size())
 			break;
@@ -239,7 +253,7 @@ JSON::Object JSON::_parse_object(const std::string &str)
 
 		_skip_spaces(str, pos);
 		if (str[pos++] != ':')
-		throw JSON::Exception(exception_message);
+			throw JSON::Exception(exception_message);
 
 		obj[key] = _parse_value(str, pos, true);
 	}
@@ -256,7 +270,8 @@ JSON::Object JSON::_parse_object(const std::string &str, size_t &pos, bool next)
 	size_t start = pos++;
 
 	size_t depth = 1;
-	while (pos < str.size() && depth > 0) {
+	while (pos < str.size() && depth > 0)
+	{
 		if (str[pos] == '{')
 			depth++;
 		else if (str[pos] == '}')
@@ -265,7 +280,8 @@ JSON::Object JSON::_parse_object(const std::string &str, size_t &pos, bool next)
 		pos++;
 	}
 
-	if (!next) {
+	if (!next)
+	{
 		size_t end = pos;
 		_skip_spaces(str, end);
 
