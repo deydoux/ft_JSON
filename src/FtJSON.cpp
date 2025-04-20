@@ -24,7 +24,7 @@ std::string FtJSON::Value::stringify() const
 
 std::string FtJSON::Array::stringify() const
 {
-	return FtJSON::stringify<std::vector<FtJSON::Value>>(*this);
+	return FtJSON::stringify<std::vector<FtJSON::Value> >(*this);
 }
 
 std::string FtJSON::Object::stringify() const

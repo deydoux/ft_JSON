@@ -89,6 +89,6 @@ std::ostream	&operator<<(std::ostream &os, const FtJSON::Value &value);
 std::ostream	&operator<<(std::ostream &os, const FtJSON::Array &array);
 std::ostream	&operator<<(std::ostream &os, const FtJSON::Object &obj);
 
-#include "class/FtJSON.tpp"
+#include "FtJSON.tpp"
 
 #endif
