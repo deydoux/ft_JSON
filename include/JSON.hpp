@@ -1,12 +1,12 @@
-#ifndef FTJSON_HPP
-#define FTJSON_HPP
+#ifndef FT_JSON_HPP
+#define FT_JSON_HPP
 
 #include <iostream>
 #include <map>
 #include <string>
 #include <vector>
 
-class FtJSON
+class JSON
 {
 public:
 	class Value
@@ -85,10 +85,10 @@ private:
 	static T	_parse(const std::string &str, size_t &pos, bool next = false);
 };
 
-std::ostream	&operator<<(std::ostream &os, const FtJSON::Value &value);
-std::ostream	&operator<<(std::ostream &os, const FtJSON::Array &array);
-std::ostream	&operator<<(std::ostream &os, const FtJSON::Object &obj);
+std::ostream	&operator<<(std::ostream &os, const JSON::Value &value);
+std::ostream	&operator<<(std::ostream &os, const JSON::Array &array);
+std::ostream	&operator<<(std::ostream &os, const JSON::Object &obj);
 
-#include "FtJSON.tpp"
+#include "JSON.tpp"
 
 #endif

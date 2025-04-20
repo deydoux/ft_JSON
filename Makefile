@@ -1,6 +1,6 @@
 NAME = libft_json.a
 
-SRCS = FtJSON.cpp
+SRCS = JSON.cpp
 
 SRC_DIR = src
 INC_DIR = include
