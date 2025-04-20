@@ -1,33 +1,33 @@
-#include "JSON.hpp"
+#include "FtJSON.hpp"
 
 #include <sstream>
 
-JSON::Value::Value() : _str("null") {}
+FtJSON::Value::Value() : _str("null") {}
 
-JSON::Value::Value(const Value &other) : _str(other._str) {}
+FtJSON::Value::Value(const Value &other) : _str(other._str) {}
 
-JSON::Value &JSON::Value::operator=(const Value &rhs)
+FtJSON::Value &FtJSON::Value::operator=(const Value &rhs)
 {
 	_str = rhs._str;
 	return *this;
 }
 
-bool JSON::Value::operator==(const Value &rhs) const
+bool FtJSON::Value::operator==(const Value &rhs) const
 {
 	return _str == rhs._str;
 }
 
-std::string JSON::Value::stringify() const
+std::string FtJSON::Value::stringify() const
 {
 	return _str;
 }
 
-std::string JSON::Array::stringify() const
+std::string FtJSON::Array::stringify() const
 {
-	return JSON::stringify<std::vector<JSON::Value>>(*this);
+	return FtJSON::stringify<std::vector<FtJSON::Value>>(*this);
 }
 
-std::string JSON::Object::stringify() const
+std::string FtJSON::Object::stringify() const
 {
 	std::string result = "{";
 
@@ -45,21 +45,21 @@ std::string JSON::Object::stringify() const
 	return result;
 }
 
-JSON::Exception::Exception(const std::string &message) : std::invalid_argument(message) {}
+FtJSON::Exception::Exception(const std::string &message) : std::invalid_argument(message) {}
 
-std::string JSON::stringify(const bool &boolean)
+std::string FtJSON::stringify(const bool &boolean)
 {
 	return boolean ? "true" : "false";
 }
 
-std::string JSON::stringify(const char *str)
+std::string FtJSON::stringify(const char *str)
 {
 	if (!str)
 		return "null";
 	return stringify(std::string(str));
 }
 
-std::string JSON::stringify(const std::string &str)
+std::string FtJSON::stringify(const std::string &str)
 {
 	std::string result = str;
 
@@ -81,13 +81,13 @@ std::string JSON::stringify(const std::string &str)
 	return result;
 }
 
-void JSON::_skip_spaces(const std::string &str, size_t &pos)
+void FtJSON::_skip_spaces(const std::string &str, size_t &pos)
 {
 	while (std::isspace(str[pos]))
 		pos++;
 }
 
-JSON::Value JSON::_parse_value(const std::string &str, size_t &pos, bool next)
+FtJSON::Value FtJSON::_parse_value(const std::string &str, size_t &pos, bool next)
 {
 	_skip_spaces(str, pos);
 
@@ -115,15 +115,15 @@ JSON::Value JSON::_parse_value(const std::string &str, size_t &pos, bool next)
 	else
 		return Value(_parse<double>(str, pos, next));
 
-	throw JSON::Exception("Invalid JSON value");
+	throw FtJSON::Exception("Invalid FtJSON value");
 }
 
-std::string JSON::_parse_string(const std::string &str)
+std::string FtJSON::_parse_string(const std::string &str)
 {
-	static const std::string exception_message = "Invalid JSON string";
+	static const std::string exception_message = "Invalid FtJSON string";
 
 	if (str.size() < 2 || str[0] != '"' || str[str.size() - 1] != '"')
-		throw JSON::Exception(exception_message);
+		throw FtJSON::Exception(exception_message);
 
 	std::string value = str.substr(1, str.size() - 2);
 
@@ -132,7 +132,7 @@ std::string JSON::_parse_string(const std::string &str)
 		if (value[pos] == '\\')
 		{
 			if (pos + 1 >= value.size())
-				throw JSON::Exception(exception_message);
+				throw FtJSON::Exception(exception_message);
 
 			char next = value[pos + 1];
 
@@ -146,13 +146,13 @@ std::string JSON::_parse_string(const std::string &str)
 				pos++;
 		}
 		else if (value[pos] == '"')
-			throw JSON::Exception(exception_message);
+			throw FtJSON::Exception(exception_message);
 	}
 
 	return value;
 }
 
-std::string JSON::_parse_string(const std::string &str, size_t &pos, bool next)
+std::string FtJSON::_parse_string(const std::string &str, size_t &pos, bool next)
 {
 	_skip_spaces(str, pos);
 	size_t start = pos++;
@@ -166,18 +166,18 @@ std::string JSON::_parse_string(const std::string &str, size_t &pos, bool next)
 		_skip_spaces(str, end);
 
 		if (end + 1 < str.size())
-			throw JSON::Exception("Invalid JSON string");
+			throw FtJSON::Exception("Invalid FtJSON string");
 	}
 
 	return _parse_string(str.substr(start, ++pos - start));
 }
 
-JSON::Array JSON::_parse_array(const std::string &str)
+FtJSON::Array FtJSON::_parse_array(const std::string &str)
 {
-	static const std::string exception_message = "Invalid JSON array";
+	static const std::string exception_message = "Invalid FtJSON array";
 
 	if (str.size() < 2 || str[0] != '[' || str[str.size() - 1] != ']')
-		throw JSON::Exception(exception_message);
+		throw FtJSON::Exception(exception_message);
 
 	Array arr;
 	size_t pos = 1;
@@ -190,18 +190,18 @@ JSON::Array JSON::_parse_array(const std::string &str)
 
 		if (!arr.empty())
 			if (str[pos++] != ',')
-				throw JSON::Exception(exception_message);
+				throw FtJSON::Exception(exception_message);
 
 		arr.push_back(_parse_value(str, pos, true));
 	}
 
 	if (pos + 1 < str.size())
-		throw JSON::Exception(exception_message);
+		throw FtJSON::Exception(exception_message);
 
 	return arr;
 }
 
-JSON::Array JSON::_parse_array(const std::string &str, size_t &pos, bool next)
+FtJSON::Array FtJSON::_parse_array(const std::string &str, size_t &pos, bool next)
 {
 	_skip_spaces(str, pos);
 	size_t start = pos++;
@@ -223,18 +223,18 @@ JSON::Array JSON::_parse_array(const std::string &str, size_t &pos, bool next)
 		_skip_spaces(str, end);
 
 		if (end + 1 < str.size())
-			throw JSON::Exception("Invalid JSON array");
+			throw FtJSON::Exception("Invalid FtJSON array");
 	}
 
 	return _parse_array(str.substr(start, pos - start));
 }
 
-JSON::Object JSON::_parse_object(const std::string &str)
+FtJSON::Object FtJSON::_parse_object(const std::string &str)
 {
-	static const std::string exception_message = "Invalid JSON object";
+	static const std::string exception_message = "Invalid FtJSON object";
 
 	if (str.size() < 2 || str[0] != '{' || str[str.size() - 1] != '}')
-		throw JSON::Exception(exception_message);
+		throw FtJSON::Exception(exception_message);
 
 	Object obj;
 	size_t pos = 1;
@@ -247,24 +247,24 @@ JSON::Object JSON::_parse_object(const std::string &str)
 
 		if (!obj.empty())
 			if (str[pos++] != ',')
-				throw JSON::Exception(exception_message);
+				throw FtJSON::Exception(exception_message);
 
 		std::string key = _parse_string(str, pos, true);
 
 		_skip_spaces(str, pos);
 		if (str[pos++] != ':')
-			throw JSON::Exception(exception_message);
+			throw FtJSON::Exception(exception_message);
 
 		obj[key] = _parse_value(str, pos, true);
 	}
 
 	if (pos + 1 < str.size())
-		throw JSON::Exception(exception_message);
+		throw FtJSON::Exception(exception_message);
 
 	return obj;
 }
 
-JSON::Object JSON::_parse_object(const std::string &str, size_t &pos, bool next)
+FtJSON::Object FtJSON::_parse_object(const std::string &str, size_t &pos, bool next)
 {
 	_skip_spaces(str, pos);
 	size_t start = pos++;
@@ -286,25 +286,25 @@ JSON::Object JSON::_parse_object(const std::string &str, size_t &pos, bool next)
 		_skip_spaces(str, end);
 
 		if (end + 1 < str.size())
-			throw JSON::Exception("Invalid JSON object");
+			throw FtJSON::Exception("Invalid FtJSON object");
 	}
 
 	return _parse_object(str.substr(start, pos - start));
 }
 
-std::ostream &operator<<(std::ostream &os, const JSON::Value &value)
+std::ostream &operator<<(std::ostream &os, const FtJSON::Value &value)
 {
 	os << value.stringify();
 	return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const JSON::Array &array)
+std::ostream &operator<<(std::ostream &os, const FtJSON::Array &array)
 {
 	os << array.stringify();
 	return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const JSON::Object &obj)
+std::ostream &operator<<(std::ostream &os, const FtJSON::Object &obj)
 {
 	os << obj.stringify();
 	return os;
