@@ -81,7 +81,7 @@ std::string JSON::stringify(const std::string &str)
 	return result;
 }
 
-void JSON::_skip_spaces(const std::string &str, size_t &pos)
+void JSON::_skip_whitespaces(const std::string &str, size_t &pos)
 {
 	while (std::isspace(str[pos]))
 		pos++;
@@ -89,7 +89,7 @@ void JSON::_skip_spaces(const std::string &str, size_t &pos)
 
 JSON::Value JSON::_parse_value(const std::string &str, size_t &pos, bool next)
 {
-	_skip_spaces(str, pos);
+	_skip_whitespaces(str, pos);
 
 	if (str[pos] == '"')
 		return Value(_parse_string(str, pos, next));
@@ -154,7 +154,7 @@ std::string JSON::_parse_string(const std::string &str)
 
 std::string JSON::_parse_string(const std::string &str, size_t &pos, bool next)
 {
-	_skip_spaces(str, pos);
+	_skip_whitespaces(str, pos);
 	size_t start = pos++;
 
 	while (pos < str.size() && (str[pos] != '"' || str[pos - 1] == '\\'))
@@ -163,7 +163,7 @@ std::string JSON::_parse_string(const std::string &str, size_t &pos, bool next)
 	if (!next)
 	{
 		size_t end = pos;
-		_skip_spaces(str, end);
+		_skip_whitespaces(str, end);
 
 		if (end + 1 < str.size())
 			throw JSON::Exception("Invalid JSON string");
@@ -184,7 +184,7 @@ JSON::Array JSON::_parse_array(const std::string &str)
 
 	while (pos < str.size())
 	{
-		_skip_spaces(str, pos);
+		_skip_whitespaces(str, pos);
 		if (pos + 1 == str.size())
 			break;
 
@@ -203,7 +203,7 @@ JSON::Array JSON::_parse_array(const std::string &str)
 
 JSON::Array JSON::_parse_array(const std::string &str, size_t &pos, bool next)
 {
-	_skip_spaces(str, pos);
+	_skip_whitespaces(str, pos);
 	size_t start = pos++;
 
 	size_t depth = 1;
@@ -220,7 +220,7 @@ JSON::Array JSON::_parse_array(const std::string &str, size_t &pos, bool next)
 	if (!next)
 	{
 		size_t end = pos;
-		_skip_spaces(str, end);
+		_skip_whitespaces(str, end);
 
 		if (end + 1 < str.size())
 			throw JSON::Exception("Invalid JSON array");
@@ -241,7 +241,7 @@ JSON::Object JSON::_parse_object(const std::string &str)
 
 	while (pos < str.size())
 	{
-		_skip_spaces(str, pos);
+		_skip_whitespaces(str, pos);
 		if (pos + 1 == str.size())
 			break;
 
@@ -251,7 +251,7 @@ JSON::Object JSON::_parse_object(const std::string &str)
 
 		std::string key = _parse_string(str, pos, true);
 
-		_skip_spaces(str, pos);
+		_skip_whitespaces(str, pos);
 		if (str[pos++] != ':')
 			throw JSON::Exception(exception_message);
 
@@ -266,7 +266,7 @@ JSON::Object JSON::_parse_object(const std::string &str)
 
 JSON::Object JSON::_parse_object(const std::string &str, size_t &pos, bool next)
 {
-	_skip_spaces(str, pos);
+	_skip_whitespaces(str, pos);
 	size_t start = pos++;
 
 	size_t depth = 1;
@@ -283,7 +283,7 @@ JSON::Object JSON::_parse_object(const std::string &str, size_t &pos, bool next)
 	if (!next)
 	{
 		size_t end = pos;
-		_skip_spaces(str, end);
+		_skip_whitespaces(str, end);
 
 		if (end + 1 < str.size())
 			throw JSON::Exception("Invalid JSON object");
