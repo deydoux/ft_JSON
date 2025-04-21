@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-JSON::Value::Value() : _str("null") {}
+JSON::Value::Value() {}
 
 JSON::Value::Value(const Value &other) : _str(other._str) {}
 
@@ -15,6 +15,11 @@ JSON::Value &JSON::Value::operator=(const Value &rhs)
 bool JSON::Value::operator==(const Value &rhs) const
 {
 	return _str == rhs._str;
+}
+
+bool JSON::Value::is_defined() const
+{
+	return !_str.empty();
 }
 
 std::string JSON::Value::stringify() const

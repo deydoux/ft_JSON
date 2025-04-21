@@ -27,6 +27,8 @@ public:
 		template <typename T>
 		bool	operator!=(const T &rhs) const;
 
+		bool	is_defined() const;
+
 		std::string	stringify() const;
 
 		template <typename T>
