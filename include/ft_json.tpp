@@ -1,7 +1,7 @@
 #ifndef FT_JSON_TPP
 #define FT_JSON_TPP
 
-#include "JSON.hpp"
+#include "ft_json.hpp"
 
 #include <sstream>
 
