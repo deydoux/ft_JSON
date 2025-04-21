@@ -86,6 +86,14 @@ std::string JSON::stringify(const std::string &str)
 	return result;
 }
 
+std::string JSON::stringify(const void *ptr)
+{
+	if (!ptr)
+		return "null";
+
+	return stringify(reinterpret_cast<unsigned long long>(ptr));
+}
+
 void JSON::_skip_whitespaces(const std::string &str, size_t &pos)
 {
 	while (std::isspace(str[pos]))
@@ -115,7 +123,7 @@ JSON::Value JSON::_parse_value(const std::string &str, size_t &pos, bool next)
 	else if (str.substr(pos, 4) == "null")
 	{
 		pos += 4;
-		return Value();
+		return Value(NULL);
 	}
 	else
 		return Value(_parse<double>(str, pos, next));
